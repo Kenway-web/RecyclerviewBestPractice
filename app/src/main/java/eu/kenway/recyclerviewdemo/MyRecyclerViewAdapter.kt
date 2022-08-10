@@ -4,9 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 
-class MyRecyclerViewAdapter(val fruitslist: List<Fruit>) : RecyclerView.Adapter<MyViewHolder>() {
+class MyRecyclerViewAdapter(
+    private val fruitslist: List<Fruit>,
+    private val clickListener: (Fruit) -> Unit //unit  means not returning anything
+) : RecyclerView.Adapter<MyViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -17,9 +21,13 @@ class MyRecyclerViewAdapter(val fruitslist: List<Fruit>) : RecyclerView.Adapter<
 
     // we use onBindViewHolder to display data on the list item
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val fruit=fruitslist[position]
-        holder.bind(fruit)   // send data to the bind fun of ViewHolder class for setting values
-        
+        val fruit = fruitslist[position]
+        // send data to the bind fun of ViewHolder class for setting values
+        holder.bind(
+            fruit,
+            clickListener
+        )
+
     }
 
     override fun getItemCount(): Int {
@@ -27,9 +35,18 @@ class MyRecyclerViewAdapter(val fruitslist: List<Fruit>) : RecyclerView.Adapter<
     }
 }
 
+
 class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-    fun bind(fruit:Fruit) {
+
+    //getting data from holder.bind(__,__)  from onBindViewHolder()
+    fun bind(fruit: Fruit, clickListener: (Fruit) -> Unit) {
         val myTextView = view.findViewById<TextView>(R.id.tvName)
-        myTextView.text=fruit.name
+        myTextView.text = fruit.name
+        view.setOnClickListener {
+            clickListener(fruit)
+        }
+
     }
+
+
 }
